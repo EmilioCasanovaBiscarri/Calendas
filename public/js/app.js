@@ -241,6 +241,10 @@ function pintarEstadisticas() {
   $('#st-mejor').textContent = e.mejorRacha;
   $('#st-jugados').textContent = e.jugados;
   $('#st-aciertos').textContent = e.jugados ? `${Math.round((e.aciertos / e.jugados) * 100)} %` : '—';
+  $('#ve-racha').textContent = racha;
+  $('#ve-mejor').textContent = e.mejorRacha;
+  $('#ve-jugados').textContent = e.jugados;
+  $('#ve-aciertos').textContent = $('#st-aciertos').textContent;
 }
 
 function formatoCuenta(ms) {
@@ -283,15 +287,17 @@ async function alCompartir() {
   alCompartir.temporizador = setTimeout(() => (aviso.textContent = ''), 4000);
 }
 
-/** Ventana «Cómo se juega»: se abre con el botón «?» de la cabecera. */
+/** Ventanas «Cómo se juega» (botón «?») y «Estadísticas» (icono de barras) de la cabecera. */
 function prepararReglas() {
-  const dialogo = $('#reglas');
-  $('#abrir-reglas').addEventListener('click', () => dialogo.showModal());
-  dialogo.querySelectorAll('button').forEach((boton) => boton.addEventListener('click', () => dialogo.close()));
-  // Tocar fuera de la ficha (en el fondo) también cierra.
-  dialogo.addEventListener('click', (evento) => {
-    if (evento.target === dialogo) dialogo.close();
-  });
+  for (const [boton, id] of [['#abrir-reglas', '#reglas'], ['#abrir-estadisticas', '#ventana-estadisticas']]) {
+    const dialogo = $(id);
+    $(boton).addEventListener('click', () => dialogo.showModal());
+    dialogo.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => dialogo.close()));
+    // Tocar fuera de la ficha (en el fondo) también cierra.
+    dialogo.addEventListener('click', (evento) => {
+      if (evento.target === dialogo) dialogo.close();
+    });
+  }
 }
 
 /** Al ir a otro duelo desde dentro del juego, la página siguiente no repite la portada. */

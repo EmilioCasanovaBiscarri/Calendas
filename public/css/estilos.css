@@ -92,8 +92,37 @@ button {
 
 /* El título y el subtítulo ocupan todo el ancho; el botón de ayuda va encima, a la derecha del título. */
 .cabecera-titulo,
-.boton-ayuda {
+.boton-ayuda,
+.boton-estadisticas {
   grid-area: 1 / 1;
+}
+
+/* Estadísticas: arriba a la izquierda, con el icono de barras de los demás juegos. */
+.boton-estadisticas {
+  position: relative;
+  justify-self: start;
+  align-self: start;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: 0.375rem 0 0 -0.4rem;
+  padding: 0;
+  color: var(--tinta);
+  background: none;
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.boton-estadisticas svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
 }
 
 /* Instrucciones: arriba a la derecha, como en los demás juegos del Almanaque. */
@@ -663,6 +692,11 @@ button {
   font-size: 1.6rem;
   font-weight: 500;
   line-height: 1.1;
+}
+
+.estadisticas-ventana {
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0.75rem 0 0;
 }
 
 .estadisticas small {

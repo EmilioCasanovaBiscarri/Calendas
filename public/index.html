@@ -70,6 +70,9 @@
 
   <main class="hoja">
     <header class="cabecera">
+      <button type="button" class="boton-estadisticas" id="abrir-estadisticas" aria-label="Estadísticas" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V5M16 20v-7M22 20H2"/></svg>
+      </button>
       <div class="cabecera-titulo">
         <h1 class="titulo" id="titulo"><img class="titulo-sello" src="icons/sello.svg" alt="" width="34" height="34">Calendas</h1>
         <p class="subtitulo"><span id="numero">Duelo</span> · <span id="fecha-larga"></span></p>
@@ -127,6 +130,22 @@
 
     <footer class="pie">Años de primera documentación aproximados.</footer>
   </main>
+
+  <dialog class="reglas" id="ventana-estadisticas" aria-labelledby="estadisticas-titulo">
+    <div class="reglas-ficha">
+      <header class="reglas-cabecera">
+        <h2 id="estadisticas-titulo">Estadísticas</h2>
+        <button type="button" class="cerrar" aria-label="Cerrar">×</button>
+      </header>
+      <section class="estadisticas estadisticas-ventana" aria-label="Estadísticas">
+        <div><span id="ve-racha">0</span><small>Racha</small></div>
+        <div><span id="ve-mejor">0</span><small>Mejor racha</small></div>
+        <div><span id="ve-aciertos">—</span><small>Aciertos</small></div>
+        <div><span id="ve-jugados">0</span><small>Jugados</small></div>
+      </section>
+      <button type="button" class="boton-compartir">Cerrar</button>
+    </div>
+  </dialog>
 
   <dialog class="reglas" id="reglas" aria-labelledby="reglas-titulo">
     <div class="reglas-ficha">
