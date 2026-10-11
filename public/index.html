@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="css/estilos.css">
   <script>
     // La portada con el logo sale en cada carga, salvo al navegar dentro del juego
-    // (archivo de duelos, volver al de hoy): esos enlaces dejan esta marca de un solo uso.
+    // (de un duelo del día a otro): esos enlaces dejan esta marca de un solo uso.
     try {
       if (sessionStorage.getItem('calendas:sin-portada')) {
         sessionStorage.removeItem('calendas:sin-portada');
@@ -80,7 +80,6 @@
     </section>
 
     <section class="duelo" id="duelo">
-      <a class="volver" id="volver" hidden>← Volver a los duelos de hoy</a>
       <nav class="rondas" id="rondas" aria-label="Duelos del día" hidden></nav>
       <h2 class="pregunta">Ponle fecha a las palabras</h2>
       <p class="instruccion" id="instruccion">Toca la palabra que entró antes en el español.</p>
@@ -123,20 +122,7 @@
       <div><span id="st-jugados">0</span><small>Jugados</small></div>
     </section>
 
-    <button type="button" class="boton-secundario" id="abrir-archivo" hidden>Duelos anteriores</button>
-
     <footer class="pie">Años de primera documentación aproximados.</footer>
   </main>
-
-  <dialog class="archivo" id="archivo" aria-labelledby="archivo-titulo">
-    <div class="archivo-ficha">
-      <header class="archivo-cabecera">
-        <h2 id="archivo-titulo">Duelos anteriores</h2>
-        <button type="button" class="cerrar" id="cerrar-archivo" aria-label="Cerrar">×</button>
-      </header>
-      <p class="archivo-nota">Cuentan para tus aciertos, pero no para la racha.</p>
-      <ol class="archivo-lista" id="archivo-lista"></ol>
-    </div>
-  </dialog>
 </body>
 </html>

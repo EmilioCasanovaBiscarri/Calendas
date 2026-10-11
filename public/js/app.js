@@ -1,17 +1,8 @@
 // Arranque: decide qué día es, carga los duelos del día y muestra o la pregunta
 // o el resultado ya jugado. Desde el 3 de octubre de 2026 hay tres duelos al día:
-// ?partida=N elige cuál (si falta, el primero sin jugar). Con ?duelo=N se juega
-// un día anterior del archivo.
+// ?partida=N elige cuál (si falta, el primero sin jugar).
 
-import {
-  FECHA_LANZAMIENTO,
-  esFechaValida,
-  fechaLarga,
-  fechaLocal,
-  msHastaProximoDuelo,
-  numeroDuelo,
-  sumarDias,
-} from './fecha.js';
+import { esFechaValida, fechaLarga, fechaLocal, msHastaProximoDuelo, numeroDuelo } from './fecha.js';
 import { DUELOS_POR_DIA, FECHA_TRES_DUELOS, cargarBanco, duelosDelDia, fechaDelCiclo, ultimoDiaProgramado } from './duelos.js';
 import * as estadisticas from './estadisticas.js';
 import { enviarRespuesta, pedirTotales } from './api.js';
@@ -31,8 +22,7 @@ if (parametroFecha !== null && !modoDesarrollo) {
 if (modoDesarrollo) estadisticas.usarModoDesarrollo();
 
 const hoy = modoDesarrollo ? parametroFecha : fechaLocal();
-const fecha = fechaDelArchivo(parametros.get('duelo')) ?? hoy;
-const esArchivo = fecha !== hoy;
+const fecha = hoy;
 const numero = numeroDuelo(fecha);
 
 let selecciones = [];
@@ -44,27 +34,12 @@ let cuentaAtrasActiva = false;
 retirarPortada();
 iniciar();
 
-/** ?duelo=N abre un duelo anterior: del #1 al de ayer. Cualquier otro valor lleva al de hoy. */
-function fechaDelArchivo(valor) {
-  if (valor === null) return null;
-  const n = Number(valor);
-  if (!Number.isInteger(n) || n < 1 || n >= numeroDuelo(hoy)) return null;
-  return sumarDias(FECHA_LANZAMIENTO, n - 1);
-}
-
-/** Enlace a un día (sin número: hoy) y a uno de sus duelos, conservando el ?fecha= del modo desarrollo. */
-function enlaceDuelo(n, partida) {
+/** Enlace a otro duelo de hoy, conservando el ?fecha= del modo desarrollo. */
+function enlaceRonda(r) {
   const destino = new URLSearchParams();
   if (modoDesarrollo) destino.set('fecha', hoy);
-  if (n) destino.set('duelo', n);
-  if (partida) destino.set('partida', partida);
-  const consulta = destino.toString();
-  return consulta ? `?${consulta}` : location.pathname;
-}
-
-/** Enlace a otro duelo del mismo día que se está viendo. */
-function enlaceRonda(r) {
-  return enlaceDuelo(esArchivo ? numero : null, r);
+  destino.set('partida', r);
+  return `?${destino}`;
 }
 
 /** Duelos de un día sin necesidad de cargar el banco. */
@@ -117,19 +92,13 @@ function retirarPortada() {
 }
 
 async function iniciar() {
-  $('#numero').textContent = `${esArchivo ? 'Archivo · ' : ''}${duelosEn(fecha) > 1 ? 'Día' : 'Duelo'} n.º ${numero}`;
+  $('#numero').textContent = `${duelosEn(fecha) > 1 ? 'Día' : 'Duelo'} n.º ${numero}`;
   $('#fecha-larga').textContent = fechaLarga(fecha);
   if (modoDesarrollo) {
     $('#barra-dev').hidden = false;
     $('#dev-fecha').textContent = hoy;
   }
-  if (esArchivo) {
-    const volver = $('#volver');
-    volver.href = enlaceDuelo();
-    volver.hidden = false;
-  }
   pintarEstadisticas();
-  prepararArchivo();
   document.addEventListener('click', saltarPortadaAlNavegar);
   $('#compartir').addEventListener('click', alCompartir);
   document.addEventListener('visibilitychange', recargarSiCambioElDia);
@@ -177,7 +146,6 @@ function responder(palabra) {
     dueloId: seleccion.duelo.id,
     eleccion: palabra,
     acierto,
-    archivo: esArchivo,
   });
   mostrarResultado(palabra, true);
   pintarRondas();
@@ -216,7 +184,7 @@ function mostrarResultado(eleccion, animar) {
   if (siguiente !== null) {
     $('#siguiente').href = enlaceRonda(siguiente);
     $('#siguiente').textContent = `Duelo ${siguiente} de ${selecciones.length} →`;
-  } else if (!esArchivo) {
+  } else {
     avisarAlmanaque();
   }
   revelar({
@@ -226,8 +194,7 @@ function mostrarResultado(eleccion, animar) {
     curiosidad: seleccion.duelo.curiosidad,
     animar,
   });
-  if (esArchivo) $('#cuenta-atras').hidden = true;
-  else if (siguiente === null) iniciarCuentaAtras();
+  if (siguiente === null) iniciarCuentaAtras();
 }
 
 /**
@@ -248,13 +215,10 @@ function avisarAlmanaque() {
   });
 }
 
-/**
- * Envía la respuesta si aún no consta en el servidor y muestra el % global.
- * Las partidas del archivo no se envían: el % de un día es el de quienes lo jugaron ese día.
- */
+/** Envía la respuesta si aún no consta en el servidor y muestra el % global. */
 async function sincronizarPorcentaje(partida) {
   if (modoDesarrollo) return;
-  const enviar = !esArchivo && !partida.enviada;
+  const enviar = !partida.enviada;
   const totales = enviar
     ? await enviarRespuesta(fecha, ronda, partida.eleccion)
     : await pedirTotales(fecha, ronda);
@@ -264,7 +228,7 @@ async function sincronizarPorcentaje(partida) {
 
   porcentajeHoy = Math.round((totales.aciertos / totales.total) * 100);
   const el = $('#porcentaje');
-  el.textContent = `El ${porcentajeHoy} % de los jugadores acertó ${esArchivo ? 'ese día' : 'hoy'}`;
+  el.textContent = `El ${porcentajeHoy} % de los jugadores acertó hoy`;
   el.hidden = false;
 }
 
@@ -318,68 +282,9 @@ async function alCompartir() {
   alCompartir.temporizador = setTimeout(() => (aviso.textContent = ''), 4000);
 }
 
-/** Botón «Duelos anteriores»: solo aparece cuando ya hay algún día pasado. */
-function prepararArchivo() {
-  const ultimo = numeroDuelo(hoy) - 1;
-  if (ultimo < 1) return;
-  const dialogo = $('#archivo');
-  const boton = $('#abrir-archivo');
-  boton.hidden = false;
-  boton.addEventListener('click', () => {
-    pintarArchivo(ultimo);
-    dialogo.showModal();
-    dialogo.querySelector('.actual, a')?.scrollIntoView({ block: 'center' });
-  });
-  $('#cerrar-archivo').addEventListener('click', () => dialogo.close());
-  // Tocar fuera de la ficha (en el fondo) también cierra.
-  dialogo.addEventListener('click', (evento) => {
-    if (evento.target === dialogo) dialogo.close();
-  });
-}
-
-function pintarArchivo(ultimo) {
-  const lista = $('#archivo-lista');
-  lista.replaceChildren();
-  for (let n = ultimo; n >= 1; n--) {
-    const dia = sumarDias(FECHA_LANZAMIENTO, n - 1);
-    const { estado, clase: claseEstado } = estadoDelDia(dia);
-    const enlace = document.createElement('a');
-    enlace.href = enlaceDuelo(n);
-    enlace.className = `archivo-dia${dia === fecha ? ' actual' : ''}`;
-    if (dia === fecha) enlace.setAttribute('aria-current', 'page');
-    for (const [clase, texto] of [
-      ['archivo-numero', `#${n}`],
-      ['archivo-fecha', fechaLarga(dia)],
-      [`archivo-estado ${claseEstado}`, estado],
-    ]) {
-      const span = document.createElement('span');
-      span.className = clase;
-      span.textContent = texto;
-      enlace.append(span);
-    }
-    const elemento = document.createElement('li');
-    elemento.append(enlace);
-    lista.append(elemento);
-  }
-}
-
-/** Resumen de un día en el archivo: «Jugar», «Seguir» si está a medias, o el resultado. */
-function estadoDelDia(dia) {
-  const partidas = partidasDe(dia, duelosEn(dia));
-  const jugadas = partidas.filter(Boolean);
-  if (jugadas.length === 0) return { estado: 'Jugar', clase: 'pendiente' };
-  if (jugadas.length < partidas.length) return { estado: 'Seguir', clase: 'pendiente' };
-  const aciertos = jugadas.filter((partida) => partida.acierto).length;
-  if (partidas.length === 1) {
-    return aciertos ? { estado: 'Acertado', clase: 'acertado' } : { estado: 'Fallado', clase: 'fallado' };
-  }
-  const clase = aciertos === partidas.length ? 'acertado' : aciertos === 0 ? 'fallado' : 'parcial';
-  return { estado: `${aciertos} de ${partidas.length}`, clase };
-}
-
 /** Al ir a otro duelo desde dentro del juego, la página siguiente no repite la portada. */
 function saltarPortadaAlNavegar(evento) {
-  if (!evento.target.closest('.archivo-dia, #volver, .ronda, #siguiente')) return;
+  if (!evento.target.closest('.ronda, #siguiente')) return;
   try {
     sessionStorage.setItem('calendas:sin-portada', '1');
   } catch {

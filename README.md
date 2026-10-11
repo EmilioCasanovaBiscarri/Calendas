@@ -75,17 +75,14 @@ Los PNG se generan a partir de los SVG de `assets/` con `npm run iconos` (usa `s
 - Arriba aparecen tres pestañas (*Duelo 1*, *Duelo 2*, *Duelo 3*) con el resultado de cada uno. Al responder, el botón lleva al siguiente duelo sin jugar; al terminar los tres aparecen *Compartir resultado* (`Calendas #3 ✅❌✅ 🔥4`), la cuenta atrás y el aviso de «Hecho» a Almanaque. Cada duelo se abre con `?partida=N`; sin ese parámetro se abre el primero sin jugar.
 - **El calendario es un ciclo** que termina el 10 de diciembre de 2026 (`FIN_DEL_CICLO` en `public/js/duelos.js`). Desde el día siguiente vuelve a empezar por el día del lanzamiento: el 11 de diciembre salen los duelos del 1 de octubre (uno solo, como aquel día), el 12 los del 2, el 13 los del 3 de octubre, y así sucesivamente. El número del día sigue creciendo (#72, #73…), y las estadísticas y el contador se guardan con la fecha real, así que no se mezclan con las de la primera vuelta. Si añades días al calendario, mueve `FIN_DEL_CICLO` al último.
 - **Si un día no tiene duelos en el calendario**, el juego no se queda vacío: rota de tres en tres por los duelos sin `fecha` y avisa en la consola.
-- **Los dos primeros días (1 y 2 de octubre) tuvieron un único duelo**, elegido con el sistema antiguo, que se conserva para que el archivo no cambie: el día de la semana fijaba la dificultad (lunes = 1 … domingo = 7) y dentro de ella se rotaba por semanas en orden de `id`. Solo usa los duelos sin `fecha`.
+- **Los dos primeros días (1 y 2 de octubre) tuvieron un único duelo**, elegido con el sistema antiguo, que se conserva para que esos días no cambien: el día de la semana fijaba la dificultad (lunes = 1 … domingo = 7) y dentro de ella se rotaba por semanas en orden de `id`. Solo usa los duelos sin `fecha`.
 - El orden de las dos cartas depende de la fecha y del número de duelo, para que la correcta no salga siempre arriba.
 - El **número del día** (#1, #2…) cuenta los días desde el lanzamiento, el 1 de octubre de 2026 (`FECHA_LANZAMIENTO` en `public/js/fecha.js`).
 
-### Duelos anteriores
+### Sin archivo
 
-- El botón **Duelos anteriores** abre la lista de días pasados, del de ayer al #1, con el resultado de cada uno (*2 de 3*), *Seguir* si se dejó a medias o *Jugar*. Aparece a partir del segundo día.
-- Cada día del archivo se abre con `?duelo=N` (y `&partida=2` para uno de sus duelos). Un número fuera de rango (futuro o el de hoy) lleva a los duelos de hoy.
-- Cada duelo cuenta para jugados y aciertos. Las partidas del archivo **no cuentan para la racha**: la racha cuenta los días en que se jugó algún duelo de ese mismo día.
-- Las partidas del archivo no se envían al contador global. El porcentaje que se muestra es el de quienes jugaron aquel día.
-- La portada con el logo sale en cada carga de la página, incluidas las recargas. Solo se la salta al moverse dentro del juego (abrir un duelo del archivo o volver al de hoy).
+- Solo se juegan los duelos de hoy: no hay lista de días pasados (se quitó el 11 de octubre de 2026). Un `?duelo=N` antiguo se ignora y abre los de hoy.
+- La portada con el logo sale en cada carga de la página, incluidas las recargas. Solo se la salta al moverse entre los duelos del día.
 
 ## Añadir duelos
 
