@@ -99,6 +99,7 @@ async function iniciar() {
     $('#dev-fecha').textContent = hoy;
   }
   pintarEstadisticas();
+  prepararReglas();
   document.addEventListener('click', saltarPortadaAlNavegar);
   $('#compartir').addEventListener('click', alCompartir);
   document.addEventListener('visibilitychange', recargarSiCambioElDia);
@@ -280,6 +281,17 @@ async function alCompartir() {
     resultado === 'copiado' ? 'Copiado al portapapeles' : resultado === 'error' ? `No se pudo copiar: ${texto}` : '';
   clearTimeout(alCompartir.temporizador);
   alCompartir.temporizador = setTimeout(() => (aviso.textContent = ''), 4000);
+}
+
+/** Ventana «Cómo se juega»: se abre con el botón «?» de la cabecera. */
+function prepararReglas() {
+  const dialogo = $('#reglas');
+  $('#abrir-reglas').addEventListener('click', () => dialogo.showModal());
+  dialogo.querySelectorAll('button').forEach((boton) => boton.addEventListener('click', () => dialogo.close()));
+  // Tocar fuera de la ficha (en el fondo) también cierra.
+  dialogo.addEventListener('click', (evento) => {
+    if (evento.target === dialogo) dialogo.close();
+  });
 }
 
 /** Al ir a otro duelo desde dentro del juego, la página siguiente no repite la portada. */

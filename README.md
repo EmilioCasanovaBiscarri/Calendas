@@ -79,6 +79,10 @@ Los PNG se generan a partir de los SVG de `assets/` con `npm run iconos` (usa `s
 - El orden de las dos cartas depende de la fecha y del número de duelo, para que la correcta no salga siempre arriba.
 - El **número del día** (#1, #2…) cuenta los días desde el lanzamiento, el 1 de octubre de 2026 (`FECHA_LANZAMIENTO` en `public/js/fecha.js`).
 
+### Instrucciones
+
+- El botón **?** de la cabecera, arriba a la derecha como en los demás juegos del Almanaque, abre «Cómo se juega» (`#reglas` en `public/index.html`).
+
 ### Sin archivo
 
 - Solo se juegan los duelos de hoy: no hay lista de días pasados (se quitó el 11 de octubre de 2026). Un `?duelo=N` antiguo se ignora y abre los de hoy.
