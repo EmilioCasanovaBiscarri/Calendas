@@ -171,26 +171,6 @@ button {
   transform: rotate(-8deg);
 }
 
-.racha {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0.5rem;
-  margin: 0.9rem 0 0.25rem;
-}
-
-.racha-num {
-  font-size: 3.4rem;
-  font-weight: 600;
-  line-height: 1;
-  font-variant-numeric: lining-nums;
-}
-
-.racha-texto {
-  font-style: italic;
-  color: var(--tinta-suave);
-}
-
 /* ---------- Duelo ---------- */
 
 .duelo {

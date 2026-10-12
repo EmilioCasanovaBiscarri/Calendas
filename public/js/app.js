@@ -234,8 +234,6 @@ async function sincronizarPorcentaje(partida) {
 function pintarEstadisticas() {
   const e = estadisticas.leer();
   const racha = estadisticas.rachaActual(hoy);
-  $('#racha').textContent = racha;
-  $('#racha-texto').textContent = racha === 1 ? 'día de racha' : 'días de racha';
   $('#st-mejor').textContent = e.mejorRacha;
   $('#st-jugados').textContent = e.jugados;
   $('#st-aciertos').textContent = e.jugados ? `${Math.round((e.aciertos / e.jugados) * 100)} %` : '—';
