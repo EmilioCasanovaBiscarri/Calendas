@@ -2,7 +2,7 @@
 // o el resultado ya jugado. Desde el 3 de octubre de 2026 hay tres duelos al día:
 // ?partida=N elige cuál (si falta, el primero sin jugar).
 
-import { esFechaValida, fechaLarga, fechaLocal, msHastaProximoDuelo, numeroDuelo } from './fecha.js';
+import { esFechaValida, fechaLocal, msHastaProximoDuelo, numeroDuelo } from './fecha.js';
 import { DUELOS_POR_DIA, FECHA_TRES_DUELOS, cargarBanco, duelosDelDia, fechaDelCiclo, ultimoDiaProgramado } from './duelos.js';
 import * as estadisticas from './estadisticas.js';
 import { enviarRespuesta, pedirTotales } from './api.js';
@@ -92,8 +92,6 @@ function retirarPortada() {
 }
 
 async function iniciar() {
-  $('#numero').textContent = `${duelosEn(fecha) > 1 ? 'Día' : 'Duelo'} n.º ${numero}`;
-  $('#fecha-larga').textContent = fechaLarga(fecha);
   if (modoDesarrollo) {
     $('#barra-dev').hidden = false;
     $('#dev-fecha').textContent = hoy;
