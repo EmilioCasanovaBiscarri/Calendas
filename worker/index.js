@@ -1,6 +1,6 @@
 // Worker de Cloudflare: el contador global de Calendas.
 //
-// La web se publica en GitHub Pages (https://joseleking.github.io/Calendas/) y llama
+// La web se publica en GitHub Pages (https://emiliocasanovabiscarri.github.io/Calendas/) y llama
 // aquí desde otro dominio, así que las respuestas llevan cabeceras CORS para ese origen.
 // Quien entre por la dirección antigua (calendas.calendas.workers.dev) se redirige a
 // GitHub Pages. La web no se sube a Cloudflare: en local, npm run dev la sirve con
@@ -20,8 +20,8 @@ import banco from '../public/data/duelos.json';
 import { clavePartida, duelosDelDia } from '../public/js/duelos.js';
 import { esFechaValida, fechaUTC, sumarDias } from '../public/js/fecha.js';
 
-const WEB = 'https://joseleking.github.io/Calendas';
-const ORIGEN_WEB = 'https://joseleking.github.io';
+const WEB = 'https://emiliocasanovabiscarri.github.io/Calendas';
+const ORIGEN_WEB = 'https://emiliocasanovabiscarri.github.io';
 const HOST_ANTIGUO = 'calendas.calendas.workers.dev';
 
 const CORS = {

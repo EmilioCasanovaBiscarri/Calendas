@@ -134,8 +134,8 @@ Limitación del prototipo: no hay protección contra envíos falsos desde fuera 
 
 El juego se publica en dos sitios, los dos automáticamente en cada push a `main`:
 
-- **La web, en GitHub Pages:** **https://joseleking.github.io/Calendas/**, como el resto de juegos. La publica `.github/workflows/pages.yml`, que sube `public/` tal cual.
-- **El contador, en Cloudflare:** un Worker con la base de datos D1 en **https://calendas.calendas.workers.dev/api/respuestas**. GitHub Pages solo sirve archivos estáticos, así que no puede guardar las respuestas de todos. `js/api.js` llama al Worker cuando la web está en github.io, y el Worker solo acepta peticiones del navegador (CORS) desde `https://joseleking.github.io`. Cualquier otra ruta de calendas.calendas.workers.dev redirige a GitHub Pages, para que sigan funcionando los enlaces y las apps instaladas con la dirección antigua.
+- **La web, en GitHub Pages:** **https://emiliocasanovabiscarri.github.io/Calendas/**, como el resto de juegos. La publica `.github/workflows/pages.yml`, que sube `public/` tal cual.
+- **El contador, en Cloudflare:** un Worker con la base de datos D1 en **https://calendas.calendas.workers.dev/api/respuestas**. GitHub Pages solo sirve archivos estáticos, así que no puede guardar las respuestas de todos. `js/api.js` llama al Worker cuando la web está en github.io, y el Worker solo acepta peticiones del navegador (CORS) desde `https://emiliocasanovabiscarri.github.io`. Cualquier otra ruta de calendas.calendas.workers.dev redirige a GitHub Pages, para que sigan funcionando los enlaces y las apps instaladas con la dirección antigua.
 
 **GitHub Pages, primera vez:** el repo tiene que ser público (con cuenta gratuita, Pages no publica repos privados). En **Settings → Pages**, elige *Source: GitHub Actions*.
 
