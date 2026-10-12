@@ -42,6 +42,11 @@ function enlaceRonda(r) {
   return `?${destino}`;
 }
 
+/** Enlace a la pantalla final del día: la página sin ?partida=. */
+function enlaceResumen() {
+  return modoDesarrollo ? `?fecha=${hoy}` : location.pathname;
+}
+
 /** Duelos de un día sin necesidad de cargar el banco. */
 function duelosEn(dia) {
   return fechaDelCiclo(dia) < FECHA_TRES_DUELOS ? 1 : DUELOS_POR_DIA;
@@ -118,6 +123,12 @@ async function iniciar() {
     return;
   }
 
+  // Con los tres duelos jugados, la página sin ?partida= es la pantalla final.
+  if (!parametros.has('partida') && partidasDe(fecha, selecciones.length).every(Boolean)) {
+    mostrarResumen();
+    return;
+  }
+
   pintarRondas();
   const botones = document.querySelectorAll('.carta');
   seleccion.cartas.forEach((carta, i) => {
@@ -178,13 +189,14 @@ function pintarRondas() {
 
 function mostrarResultado(eleccion, animar) {
   const siguiente = siguienteSinJugar();
-  $('#siguiente').hidden = siguiente === null;
-  $('#final').hidden = siguiente !== null;
+  $('#siguiente').hidden = false;
   if (siguiente !== null) {
     $('#siguiente').href = enlaceRonda(siguiente);
     $('#siguiente').textContent = `Duelo ${siguiente} de ${selecciones.length} →`;
   } else {
     avisarAlmanaque();
+    $('#siguiente').href = enlaceResumen();
+    $('#siguiente').textContent = 'Ver resultado →';
   }
   revelar({
     cartas: seleccion.cartas,
@@ -193,7 +205,56 @@ function mostrarResultado(eleccion, animar) {
     curiosidad: seleccion.duelo.curiosidad,
     animar,
   });
-  if (siguiente === null) iniciarCuentaAtras();
+}
+
+/** Frase de la ficha final según los aciertos del día (de ninguno a todos). */
+const FRASES = [
+  'Hoy las fechas te han dado esquinazo.',
+  'Una fecha bien puesta. Algo es algo.',
+  'Buen olfato para la historia.',
+  'Memoria de cronista: ni una fecha fuera de sitio.',
+];
+
+/** Hoja de calendario: marca de la ficha final, llena si se acertó el duelo. */
+const HOJA = '<path class="hoja-cuerpo" d="M3.5 5.5h17v15h-17Z"/><path class="hoja-anillas" d="M8 3v5M16 3v5"/>';
+
+/** Pantalla final: ficha con el resultado, una línea por duelo, estadísticas y botones. */
+function mostrarResumen() {
+  const partidas = partidasDe(fecha, selecciones.length);
+  const aciertos = partidas.filter((partida) => partida.acierto).length;
+  const total = partidas.length;
+  $('#duelo').hidden = true;
+  $('#resultado').hidden = true;
+  $('#pie').hidden = true;
+
+  const marcas = $('#resumen-marcas');
+  marcas.innerHTML = partidas
+    .map((partida) => `<svg class="${partida.acierto ? 'bien' : 'mal'}" viewBox="0 0 24 24" aria-hidden="true">${HOJA}</svg>`)
+    .join('');
+  marcas.setAttribute('aria-label', `${aciertos} ${aciertos === 1 ? 'acierto' : 'aciertos'} de ${total}`);
+  $('#resumen-cifra').innerHTML = `${aciertos} <small>de ${total}</small>`;
+  $('#resumen-frase').textContent = FRASES[Math.round((aciertos / total) * 3)];
+
+  $('#resumen-lista').replaceChildren(
+    ...selecciones.map((sel, i) => {
+      const acierto = partidas[i].acierto;
+      const otra = sel.cartas.find((carta) => carta.palabra !== sel.correcta);
+      const li = document.createElement('li');
+      const enlace = document.createElement('a');
+      enlace.href = enlaceRonda(i + 1);
+      enlace.innerHTML =
+        `<span class="marca ${acierto ? 'bien' : 'mal'}" aria-label="${acierto ? 'Acierto' : 'Fallo'}">${acierto ? '✓' : '✗'}</span>` +
+        '<span class="lema"></span><span class="destino"></span>';
+      enlace.querySelector('.lema').textContent = sel.correcta;
+      enlace.querySelector('.destino').textContent = `antes que ${otra.palabra}`;
+      li.append(enlace);
+      return li;
+    }),
+  );
+
+  $('#resumen').hidden = false;
+  avisarAlmanaque();
+  iniciarCuentaAtras();
 }
 
 /**
@@ -231,16 +292,19 @@ async function sincronizarPorcentaje(partida) {
   el.hidden = false;
 }
 
+/** Días, aciertos (sobre los duelos jugados) y rachas: en la pantalla final («rs-») y en la ventana («ve-»). */
 function pintarEstadisticas() {
   const e = estadisticas.leer();
-  const racha = estadisticas.rachaActual(hoy);
-  $('#st-mejor').textContent = e.mejorRacha;
-  $('#st-jugados').textContent = e.jugados;
-  $('#st-aciertos').textContent = e.jugados ? `${Math.round((e.aciertos / e.jugados) * 100)} %` : '—';
-  $('#ve-racha').textContent = racha;
-  $('#ve-mejor').textContent = e.mejorRacha;
-  $('#ve-jugados').textContent = e.jugados;
-  $('#ve-aciertos').textContent = $('#st-aciertos').textContent;
+  const cifras = {
+    dias: estadisticas.diasJugados(),
+    aciertos: e.jugados ? `${Math.round((e.aciertos / e.jugados) * 100)} %` : '—',
+    racha: estadisticas.rachaActual(hoy),
+    mejor: e.mejorRacha,
+  };
+  for (const [nombre, valor] of Object.entries(cifras)) {
+    $(`#rs-${nombre}`).textContent = valor;
+    $(`#ve-${nombre}`).textContent = valor;
+  }
 }
 
 function formatoCuenta(ms) {
@@ -298,7 +362,7 @@ function prepararReglas() {
 
 /** Al ir a otro duelo desde dentro del juego, la página siguiente no repite la portada. */
 function saltarPortadaAlNavegar(evento) {
-  if (!evento.target.closest('.ronda, #siguiente')) return;
+  if (!evento.target.closest('.ronda, #siguiente, .lista-final a')) return;
   try {
     sessionStorage.setItem('calendas:sin-portada', '1');
   } catch {

@@ -108,21 +108,31 @@
         <p id="curiosidad"></p>
       </figure>
       <a class="boton-compartir boton-siguiente" id="siguiente" hidden></a>
-      <div id="final">
-        <button type="button" class="boton-compartir" id="compartir">Compartir resultado</button>
-        <a class="boton-compartir boton-almanaque" data-almanaque-volver hidden href="https://joseleking.github.io/Almanaque/">☜ Regresar al Almanaque</a>
-        <p class="aviso" id="aviso" role="status"></p>
-        <p class="cuenta-atras" id="cuenta-atras">Nuevos duelos en <span id="cuenta">--:--:--</span></p>
+    </section>
+
+    <!-- Pantalla final, igual en todos los juegos del Almanaque: ficha con el resultado, una
+         línea por duelo, estadísticas y botones, que se ven sin desplazarse. Sale al abrir
+         Calendas con los tres duelos jugados (cada línea lleva a su duelo). -->
+    <section class="resumen" id="resumen" aria-label="Resultado de hoy" hidden>
+      <div class="ficha-final">
+        <p class="marcas" id="resumen-marcas" role="img"></p>
+        <h2 class="resumen-cifra" id="resumen-cifra"></h2>
+        <p class="resumen-frase" id="resumen-frase"></p>
       </div>
+      <ol class="lista-final" id="resumen-lista" aria-label="Toca un duelo para repasarlo"></ol>
+      <section class="estadisticas estadisticas-final" aria-label="Estadísticas">
+        <div><span id="rs-dias">0</span><small>Días</small></div>
+        <div><span id="rs-aciertos">—</span><small>Aciertos</small></div>
+        <div><span id="rs-racha">0</span><small>Racha</small></div>
+        <div><span id="rs-mejor">0</span><small>Mejor racha</small></div>
+      </section>
+      <button type="button" class="boton-compartir" id="compartir">Compartir</button>
+      <a class="boton-compartir boton-almanaque" data-almanaque-volver hidden href="https://joseleking.github.io/Almanaque/">☜ Regresar al Almanaque</a>
+      <p class="aviso" id="aviso" role="status"></p>
+      <p class="cuenta-atras" id="cuenta-atras">Nuevos duelos en <span id="cuenta">--:--:--</span></p>
     </section>
 
-    <section class="estadisticas" aria-label="Estadísticas">
-      <div><span id="st-mejor">0</span><small>Mejor racha</small></div>
-      <div><span id="st-aciertos">—</span><small>Aciertos</small></div>
-      <div><span id="st-jugados">0</span><small>Jugados</small></div>
-    </section>
-
-    <footer class="pie">Años de primera documentación aproximados.</footer>
+    <footer class="pie" id="pie">Años de primera documentación aproximados.</footer>
   </main>
 
   <dialog class="reglas" id="ventana-estadisticas" aria-labelledby="estadisticas-titulo">
@@ -132,10 +142,10 @@
         <button type="button" class="cerrar" aria-label="Cerrar">×</button>
       </header>
       <section class="estadisticas estadisticas-ventana" aria-label="Estadísticas">
+        <div><span id="ve-dias">0</span><small>Días</small></div>
+        <div><span id="ve-aciertos">—</span><small>Aciertos</small></div>
         <div><span id="ve-racha">0</span><small>Racha</small></div>
         <div><span id="ve-mejor">0</span><small>Mejor racha</small></div>
-        <div><span id="ve-aciertos">—</span><small>Aciertos</small></div>
-        <div><span id="ve-jugados">0</span><small>Jugados</small></div>
       </section>
       <button type="button" class="boton-compartir">Cerrar</button>
     </div>

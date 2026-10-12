@@ -70,6 +70,16 @@ export function marcarEnviada(fecha, ronda) {
   guardar();
 }
 
+/** Días distintos en que se jugó algún duelo de ese mismo día (sin los del archivo). */
+export function diasJugados() {
+  const { partidas } = leer();
+  const dias = new Set();
+  for (const [clave, partida] of Object.entries(partidas)) {
+    if (!partida.archivo) dias.add(clave.split('/')[0]);
+  }
+  return dias.size;
+}
+
 /** Racha vigente a fecha de hoy: si ayer no se jugó, ya está rota. */
 export function rachaActual(fecha) {
   const { ultimoDia, racha } = leer();
