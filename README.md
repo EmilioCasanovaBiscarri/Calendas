@@ -150,3 +150,7 @@ npm run desplegar                      # crea la tabla en D1 y publica el Worker
 **Publicación automática del Worker en cada push:** en el panel de Cloudflare, abre **Workers & Pages → calendas → Settings → Build → Connect** y elige el repo `Calendas` de GitHub, rama `main`. Pon como *Deploy command* `npm run desplegar`, para que aplique también las migraciones nuevas de la base de datos.
 
 **Cambios en la base de datos:** añade un archivo nuevo en `migrations/` (`0002_….sql`). `npm run desplegar` lo aplica antes de publicar.
+
+## Derechos de autor
+
+© 2026 Emilio Casanova Biscarri. Todos los derechos reservados. El código, los textos y los diseños de este repositorio no pueden copiarse ni reutilizarse sin permiso.
