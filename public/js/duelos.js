@@ -13,7 +13,7 @@ export const DUELOS_POR_DIA = 3;
  * día del lanzamiento (el #1), con los mismos duelos. Si se añaden días al calendario,
  * hay que mover esta fecha al último de ellos.
  */
-export const FIN_DEL_CICLO = '2026-12-10';
+export const FIN_DEL_CICLO = '2026-12-31';
 
 /**
  * Clave de cada duelo del día, en las estadísticas locales y en el contador: el día
@@ -64,7 +64,7 @@ function dueloSemanal(duelos, fecha) {
 
 /**
  * La fecha cuyos duelos tocan el día `fecha`: ella misma hasta FIN_DEL_CICLO y, después,
- * la del día equivalente del primer ciclo (el 11 de noviembre de 2026 vuelve al 1 de octubre).
+ * la del día equivalente del primer ciclo (el 1 de enero de 2027 vuelve al 1 de octubre).
  */
 export function fechaDelCiclo(fecha) {
   if (fecha <= FIN_DEL_CICLO) return fecha;
