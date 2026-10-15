@@ -1,7 +1,6 @@
 // Utilidades de fecha. Una "fecha de juego" es siempre una cadena 'AAAA-MM-DD'
 // referida al calendario del jugador: el día cambia a su medianoche. Módulo puro:
-// lo usan el navegador y la Worker de Cloudflare, así que no debe tocar `window`
-// ni `document`.
+// no toca `window` ni `document`.
 
 export const FECHA_LANZAMIENTO = '2026-10-01';
 
@@ -13,11 +12,6 @@ const dosCifras = (n) => String(n).padStart(2, '0');
 export function fechaLocal(ms = Date.now()) {
   const d = new Date(ms);
   return `${d.getFullYear()}-${dosCifras(d.getMonth() + 1)}-${dosCifras(d.getDate())}`;
-}
-
-/** Fecha UTC del instante `ms`. La usa la Worker, que no sabe la hora del jugador. */
-export function fechaUTC(ms = Date.now()) {
-  return new Date(ms).toISOString().slice(0, 10);
 }
 
 export function esFechaValida(fecha) {

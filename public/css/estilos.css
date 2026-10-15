@@ -547,17 +547,6 @@ button {
 .visible .hito-abajo .hito-tallo { transition-delay: 1.8s; }
 .visible .hito-abajo .hito-texto { transition-delay: 1.9s; }
 
-.porcentaje {
-  display: inline-block;
-  margin: 0.5rem 0 0;
-  padding: 0.3rem 0.75rem;
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-  border: 1px solid var(--regla);
-  border-radius: 999px;
-}
-
 .ficha {
   margin: 1.1rem 0 0;
   padding: 0.9rem 1.1rem 1rem;

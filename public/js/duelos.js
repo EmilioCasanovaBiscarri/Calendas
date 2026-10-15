@@ -1,6 +1,5 @@
 // Banco de duelos y elección determinista de los duelos del día.
-// Módulo puro salvo `cargarBanco`: el Worker de Cloudflare reutiliza `duelosDelDia`
-// para saber cuál es la respuesta correcta sin fiarse del cliente.
+// Módulo puro salvo `cargarBanco`.
 
 import { FECHA_LANZAMIENTO, diaSemana, esFechaValida, indiceDia, semanaDesdeLanzamiento, sumarDias } from './fecha.js';
 
@@ -16,7 +15,7 @@ export const DUELOS_POR_DIA = 3;
 export const FIN_DEL_CICLO = '2026-12-31';
 
 /**
- * Clave de cada duelo del día, en las estadísticas locales y en el contador: el día
+ * Clave de cada duelo del día en las estadísticas locales: el día
  * para el primero (así se guardaban cuando había uno al día) y 'AAAA-MM-DD/N' para los demás.
  */
 export const clavePartida = (fecha, ronda = 1) => (ronda === 1 ? fecha : `${fecha}/${ronda}`);

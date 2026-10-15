@@ -58,16 +58,9 @@ export function registrarPartida(fecha, ronda, { dueloId, eleccion, acierto, arc
   }
   e.jugados += 1;
   if (acierto) e.aciertos += 1;
-  e.partidas[clave] = { dueloId, eleccion, acierto, archivo, enviada: false };
+  e.partidas[clave] = { dueloId, eleccion, acierto, archivo };
   guardar();
   return e.partidas[clave];
-}
-
-export function marcarEnviada(fecha, ronda) {
-  const partida = partidaDe(fecha, ronda);
-  if (!partida) return;
-  partida.enviada = true;
-  guardar();
 }
 
 /** Días distintos en que se jugó algún duelo de ese mismo día (sin los del archivo). */

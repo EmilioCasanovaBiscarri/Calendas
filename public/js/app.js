@@ -5,14 +5,12 @@
 import { esFechaValida, fechaLocal, msHastaProximoDuelo, numeroDuelo } from './fecha.js';
 import { DUELOS_POR_DIA, FECHA_TRES_DUELOS, cargarBanco, duelosDelDia, fechaDelCiclo, ultimoDiaProgramado } from './duelos.js';
 import * as estadisticas from './estadisticas.js';
-import { enviarRespuesta, pedirTotales } from './api.js';
 import { revelar } from './revelacion.js';
 import { compartir, textoCompartir } from './compartir.js';
 
 const $ = (selector) => document.querySelector(selector);
 
-// Modo desarrollo: ?fecha=AAAA-MM-DD simula otro día, usa estadísticas aparte
-// y no envía nada al backend.
+// Modo desarrollo: ?fecha=AAAA-MM-DD simula otro día y usa estadísticas aparte.
 const parametros = new URLSearchParams(location.search);
 const parametroFecha = parametros.get('fecha');
 const modoDesarrollo = parametroFecha !== null && esFechaValida(parametroFecha);
@@ -28,7 +26,6 @@ const numero = numeroDuelo(fecha);
 let selecciones = [];
 let ronda = 1;
 let seleccion = null;
-let porcentajeHoy = null;
 let cuentaAtrasActiva = false;
 
 retirarPortada();
@@ -138,7 +135,6 @@ async function iniciar() {
   const partida = estadisticas.partidaDe(fecha, ronda);
   if (partida) {
     mostrarResultado(partida.eleccion, false);
-    sincronizarPorcentaje(partida);
     return;
   }
 
@@ -152,7 +148,7 @@ async function iniciar() {
 function responder(palabra) {
   if (estadisticas.partidaDe(fecha, ronda)) return;
   const acierto = palabra === seleccion.correcta;
-  const partida = estadisticas.registrarPartida(fecha, ronda, {
+  estadisticas.registrarPartida(fecha, ronda, {
     dueloId: seleccion.duelo.id,
     eleccion: palabra,
     acierto,
@@ -160,7 +156,6 @@ function responder(palabra) {
   mostrarResultado(palabra, true);
   pintarRondas();
   pintarEstadisticas();
-  sincronizarPorcentaje(partida);
 }
 
 /** Pestañas con los duelos del día (solo si hay más de uno) y su resultado. */
@@ -273,23 +268,6 @@ function avisarAlmanaque() {
     total: partidas.length,
     racha: estadisticas.rachaActual(hoy),
   });
-}
-
-/** Envía la respuesta si aún no consta en el servidor y muestra el % global. */
-async function sincronizarPorcentaje(partida) {
-  if (modoDesarrollo) return;
-  const enviar = !partida.enviada;
-  const totales = enviar
-    ? await enviarRespuesta(fecha, ronda, partida.eleccion)
-    : await pedirTotales(fecha, ronda);
-  if (!totales) return;
-  if (enviar) estadisticas.marcarEnviada(fecha, ronda);
-  if (totales.total === 0) return;
-
-  porcentajeHoy = Math.round((totales.aciertos / totales.total) * 100);
-  const el = $('#porcentaje');
-  el.textContent = `El ${porcentajeHoy} % de los jugadores acertó hoy`;
-  el.hidden = false;
 }
 
 /** Días, aciertos (sobre los duelos jugados) y rachas: en la pantalla final («rs-») y en la ventana («ve-»). */

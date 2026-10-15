@@ -1,5 +1,5 @@
 # Publica el juego en GitHub Pages en cada push a main (o a mano desde la pestaña Actions).
-# No hay paso de compilación: se publica public/ tal cual. El contador sigue en Cloudflare.
+# No hay paso de compilación: se publica public/ tal cual.
 name: Publicar en GitHub Pages
 
 on:

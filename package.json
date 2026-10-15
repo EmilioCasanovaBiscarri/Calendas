@@ -5,12 +5,7 @@
   "description": "Calendas: ponle fecha a las palabras. Un duelo diario sobre la historia del léxico español.",
   "type": "module",
   "scripts": {
-    "dev": "wrangler d1 migrations apply calendas --local && wrangler dev --assets public",
-    "estatico": "npx --yes serve public",
-    "desplegar": "wrangler d1 migrations apply calendas --remote && wrangler deploy",
+    "dev": "npx --yes serve public",
     "iconos": "node scripts/generar-iconos.mjs"
-  },
-  "devDependencies": {
-    "wrangler": "^4.145.0"
   }
 }
